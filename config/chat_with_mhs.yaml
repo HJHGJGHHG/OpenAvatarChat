@@ -1,0 +1,53 @@
+# MHS处理器 + LAM数字人完整配置
+default:
+  logger:
+    log_level: "INFO"
+  service:
+    host: "0.0.0.0"
+    port: 8080
+    cert_file: "ssl_certs/localhost.crt"
+    cert_key: "ssl_certs/localhost.key"
+  chat_engine:
+    model_root: "models"
+    concurrent_limit: 5
+    handler_search_path:
+      - "src/handlers"
+    handler_configs:
+      LamClient:
+        module: client/h5_rendering_client/client_handler_lam
+        asset_path: "lam_samples/barbara.zip"
+        connection_ttl: 900
+      # Silero VAD语音活动检测处理器
+      SileroVad:
+        module: vad/silerovad/vad_handler_silero
+        speaking_threshold: 0.3
+        start_delay: 2048
+        end_delay: 5000
+        buffer_look_back: 5000
+        speech_padding: 512
+      SenseVoice:
+        enabled: True
+        module: asr/sensevoice/asr_handler_sensevoice
+        model_name: "iic/SenseVoiceSmall"
+      CosyVoice:
+        enabled: True
+        module: tts/bailian_tts/tts_handler_cosyvoice_bailian
+        voice: "longxiaochun"
+        model_name: "cosyvoice-v1"
+        api_key: "sk-xxxxxxxxxxxxxxx"
+      # MHS语言模型处理器
+      MHSChat:
+        enabled: True
+        module: llm/mhs_handler/llm_handler_mhs
+        model_name: "qwen-vl-max"
+        api_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+        api_key: "sk-xxxxxxxxxxxxxxx"
+        history_length: 20
+        enable_video_input: True
+        system_prompt: "请你扮演一个心理医生的角色，用自然流畅的对话回答用户问题，给予情感分析和安慰，并在回复中加入合适的标点符号。"
+        mhs_enable: True
+        mhs_few_shot_k: 2
+        mhs_aux_model_name: "qwen-vl-plus"
+      LAM_Driver:
+        module: avatar/lam/avatar_handler_lam_audio2expression
+
