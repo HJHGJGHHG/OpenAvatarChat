@@ -117,7 +117,7 @@ class MHSChatHandler(HandlerBase):
                 logger.warning(f"无法加载sentence-transformer模型: {e}")
         if MHSChatHandler.comet_model is None:
             try:
-                model_path = os.path.join(engine_config.model_root, "comet-atomic-zh")
+                model_path = os.path.join(engine_config.model_root, "comet-atomic_2020_BART")
                 MHSChatHandler.comet_tokenizer = AutoTokenizer.from_pretrained(model_path)
                 MHSChatHandler.comet_model = AutoModelForSeq2SeqLM.from_pretrained(model_path)
                 if torch.cuda.is_available():
