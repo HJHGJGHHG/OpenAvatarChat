@@ -19,6 +19,14 @@
 - **多模态语言模型：支持多模态语言模型，包括文本、音频、视频等。**
 - **模块化设计：使用模块化的设计，可以灵活地替换组件，实现不同功能组合。**
 
+## ❤️ 新功能：MHS心理健康支持
+我们激动地宣布，`OpenAvatarChat` 现已集成专为心理健康支持设计的 **MHS (Mental Health Support) 处理器**！
+现在，您的数字人不仅能回答问题，更能化身为一位富有同理心和专业素养的倾听者。MHS 处理器通过结合**多模态视觉感知**、**相似案例检索**和**大型语言模型**的强大能力，能够：
+-   **深度共情**：理解用户的情感并给予温暖、支持性的回应。
+-   **专业引导**：通过开放式问题，引导用户探索内心感受。
+-   **视觉感知**：结合摄像头捕捉到的视觉信息，提供更贴合当下情境的互动。
+无论是日常的情绪疏导，还是需要一个安全的空间来倾诉，集成了 MHS 处理器的数字人都将是您可靠的伙伴。
+
 
 ## 📢 最新动态
 
@@ -511,6 +519,46 @@ scripts/download_MiniCPM-o_2.6-int4.sh
 
 > [!NOTE]
 > 本项目支持MiniCPM-o-2.6的原始模型以及int4量化版本，但量化版本需要安装专用分支的AutoGPTQ，相关细节请参考官方的[说明](https://modelscope.cn/models/OpenBMB/MiniCPM-o-2_6-int4)
+
+
+### MHS心理健康支持处理器
+本项目集成了一个专为心理健康支持设计的 MHS (Mental Health Support) 处理器。该处理器利用大型语言模型（如 `qwen-vl-max`），结合 few-shot learning 和视觉信息，为用户提供富有共情和专业性的对话支持。
+
+#### 依赖模型
+为了启用完整的 MHS 功能，您需要手动下载以下模型，并将它们放置在项目根目录的 `models/` 文件夹下：
+*   **相似度检索模型**:
+    *   **模型**: `paraphrase-multilingual-MiniLM-L12-v2`
+    *   **作用**: 用于从预设的心理咨询对话样例中，快速找到与当前对话最相似的例子，以提升回应质量。
+    *   **下载**: 可从 Hugging Face 或 ModelScope 获取。
+*   **常识推理模型 (可选)**:
+    *   **模型**: `comet-atomic-zh`
+    *   **作用**: 为对话提供更深层次的常识背景和推理能力。
+    *   **下载**: 可从 Hugging Face 或 ModelScope 获取。
+
+#### 配置参数
+在您的 `.yaml` 配置文件中，您可以对 `MHSChat` 处理器进行详细配置：
+
+| 参数                 | 默认值          | 说明                                                                     |
+| -------------------- | --------------- | ------------------------------------------------------------------------ |
+| `model_name`         | `qwen-vl-max`   | 用于生成回复的大语言模型名称。                                           |
+| `api_url`            | 百炼API地址     | 大语言模型的 API 地址。                                                  |
+| `api_key`            | (必需)          | 您的 API 密钥，强烈建议通过 `.env` 文件配置。                             |
+| `system_prompt`      | ""              | 自定义的系统级提示语，用于设定数字人的角色和行为。                       |
+| `mhs_enable`         | `true`          | 是否启用 MHS 增强模式（使用相似度检索、视觉分析等高级功能）。              |
+| `mhs_few_shot_k`     | `2`             | 在 MHS 模式下，每次检索的相似对话样例数量。                              |
+| `mhs_aux_model_name` | `qwen-vl-plus`  | 用于分析视觉信息（摄像头画面）的辅助多模态模型名称。                     |
+| `enable_video_input` | `true`          | 是否允许处理器接收并分析摄像头输入的视频帧。                             |
+
+MHSChat:
+  enabled: True
+  module: llm/mhs_handler/llm_handler_mhs
+  model_name: "qwen-vl-max"
+  api_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+  api_key: "sk-xxxxxxxxxxxxxxxxxxxxxxxx" # 请替换为您的真实API Key
+  system_prompt: "你是一位专业的心理咨询师，为用户提供共情和支持性的回应。"
+  mhs_enable: True
+
+
 
 ### 百炼 CosyVoice Handler
 可以使用百炼提供CosyVoice API调用TTS能力，比本地推理对系统性能要求低，但需要在百炼上开通对应的能力。
