@@ -523,7 +523,6 @@ scripts/download_MiniCPM-o_2.6-int4.sh
 
 ### MHS心理健康支持处理器
 本项目集成了一个专为心理健康支持设计的 MHS (Mental Health Support) 处理器。该处理器利用大型语言模型（如 `qwen-vl-max`），结合 few-shot learning 和视觉信息，为用户提供富有共情和专业性的对话支持。
-
 #### 依赖模型
 为了启用完整的 MHS 功能，您需要手动下载以下模型，并将它们放置在项目根目录的 `models/` 文件夹下：
 *   **相似度检索模型**:
@@ -534,10 +533,8 @@ scripts/download_MiniCPM-o_2.6-int4.sh
     *   **模型**: `comet-atomic-zh`
     *   **作用**: 为对话提供更深层次的常识背景和推理能力。
     *   **下载**: 可从 Hugging Face 或 ModelScope 获取。
-
 #### 配置参数
 在您的 `.yaml` 配置文件中，您可以对 `MHSChat` 处理器进行详细配置：
-
 | 参数                 | 默认值          | 说明                                                                     |
 | -------------------- | --------------- | ------------------------------------------------------------------------ |
 | `model_name`         | `qwen-vl-max`   | 用于生成回复的大语言模型名称。                                           |
@@ -548,7 +545,6 @@ scripts/download_MiniCPM-o_2.6-int4.sh
 | `mhs_few_shot_k`     | `2`             | 在 MHS 模式下，每次检索的相似对话样例数量。                              |
 | `mhs_aux_model_name` | `qwen-vl-plus`  | 用于分析视觉信息（摄像头画面）的辅助多模态模型名称。                     |
 | `enable_video_input` | `true`          | 是否允许处理器接收并分析摄像头输入的视频帧。                             |
-
 MHSChat:
   enabled: True
   module: llm/mhs_handler/llm_handler_mhs
@@ -557,6 +553,22 @@ MHSChat:
   api_key: "sk-xxxxxxxxxxxxxxxxxxxxxxxx" # 请替换为您的真实API Key
   system_prompt: "你是一位专业的心理咨询师，为用户提供共情和支持性的回应。"
   mhs_enable: True
+ **下载依赖模型**:
+    *   `paraphrase-multilingual-MiniLM-L12-v2` (用于相似度检索)
+      git clone --depth 1 https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 ./models/paraphrase-multilingual-MiniLM-L12-v2
+    *   `comet-atomic-zh` (用于常识推理)
+      # 步骤 1: 创建一个临时目录来存放下载的ZIP文件
+        mkdir -p ./models/temp_come
+      # 步骤 2: 下载 ZIP 压缩包到临时目录
+        wget https://storage.googleapis.com/ai2-mosaic-public/projects/mosaic-kgs/comet-atomic_2020_BART.zip -P ./models
+      # 步骤 3: 解压 ZIP 文件。这会在 models 目录下创建一个名为 comet-atomic_2020_BART 的文件夹
+        unzip ./models/temp_comet/comet-atomic_2020_BART.zip -d ./models/
+      # 步骤 4: 清理下载的 ZIP 压缩包和临时目录
+        rm -rf ./models/temp_comet
+
+
+
+
 
 
 
