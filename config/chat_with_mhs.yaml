@@ -38,7 +38,7 @@ default:
       # MHS语言模型处理器
       MHSChat:
         enabled: True
-        module: llm/mhs_handler/llm_handler_mhs
+        module: llm/llm_handler_mhs
         model_name: "qwen-vl-max"
         api_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
         api_key: "sk-xxxxxxxxxxxxxxx"
